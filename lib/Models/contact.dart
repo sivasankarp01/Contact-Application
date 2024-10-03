@@ -5,22 +5,23 @@ class Contact {
   String phoneNumber;
   String email;
   DateTime dob;
-  String location;
+  String? image; // Add image field
 
   Contact({
     required this.name,
     required this.phoneNumber,
     required this.email,
     required this.dob,
-    required this.location,
+    this.image,
   });
+
 
   Map<String, dynamic> toJson() => {
     'name': name,
     'phoneNumber': phoneNumber,
     'email': email,
-    'dob': dob.toIso8601String(),
-    'location': location,
+    'dob': dob,
+    'image':image
   };
 
   factory Contact.fromJson(Map<String, dynamic> json) {
@@ -29,7 +30,7 @@ class Contact {
       phoneNumber: json['phoneNumber'],
       email: json['email'],
       dob: DateTime.parse(json['dob']),
-      location: json['location'],
+      image: json['image'],
     );
   }
 }

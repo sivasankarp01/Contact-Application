@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../Models/contact.dart';
@@ -8,19 +10,6 @@ import 'contact_detail.dart';
 
 import 'add_edit_contact_screen.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return ContactListScreen();
-  }
-}
 
 
 
@@ -77,15 +66,30 @@ class _ContactListScreenState extends State<ContactListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Contacts'),
+        centerTitle: true,
+        title: Text('My Contacts'),
       ),
       body: ListView.builder(
         itemCount: contacts.length,
-        itemBuilder: (context, index) {
-          Contact contact = contacts[index];
+        itemBuilder: (context, i) {
+          Contact contact = contacts[i];
           return ListTile(
-            leading: CircleAvatar(
-              child: Text(contact.name[0]), // Placeholder image using the first letter
+           leading: CircleAvatar(
+              radius: 30,
+              backgroundColor: Colors.grey[300], // Background for initials or image
+              child: contact.image != null && contact.image!.isNotEmpty
+                  ? ClipOval(
+                      child: Image.file(
+                        File(contact.image!), // Load the image file from path
+                        fit: BoxFit.cover,
+                        width: 60,
+                        height: 60,
+                      ),
+                    )
+                  : Text(
+                      contact.name[0].toUpperCase(), // Fallback to initials
+                      style: TextStyle(fontSize: 24,color: Colors.purple),
+                    ),
             ),
             title: Text(contact.name),
             subtitle: Text(contact.phoneNumber),
@@ -101,7 +105,7 @@ class _ContactListScreenState extends State<ContactListScreen> {
                         builder: (context) => AddEditContactScreen(
                           contact: contact,
                           onSave: (updatedContact) {
-                            editContact(index, updatedContact);
+                            editContact(i, updatedContact);
                           },
                         ),
                       ),
@@ -110,7 +114,7 @@ class _ContactListScreenState extends State<ContactListScreen> {
                 ),
                 IconButton(
                   icon: Icon(Icons.delete),
-                  onPressed: () => deleteContact(index),
+                  onPressed: () => deleteContact(i),
                 ),
               ],
             ),
